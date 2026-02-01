@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Revive - Redirecting...</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Auto Care at your fingertips">
+
+  <!-- Open Graph Meta Tags (used by Facebook, LinkedIn, WhatsApp, and fallback for Twitter/X) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Revive - Auto Care">
+  <meta property="og:description" content="Auto Care at your fingertips">
+  <meta property="og:image" content="https://revivepro-54fb3.web.app/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://revivepro-54fb3.web.app">
+  <meta property="og:site_name" content="Revive">
+
+  <!-- Twitter/X Card Meta Tags (minimal - uses OG tags as fallback) -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@yourtwitterhandle">
+
+  <style>
+    body {
+      background: #f5f5f5;
+      color: #333;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .manual-link {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #999;
+    }
+
+    .manual-link a {
+      color: #3498db;
+      text-decoration: none;
+    }
+
+    .manual-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Revive</h1>
+    <p id="status-message">Opening app...</p>
+    <div class="spinner"></div>
+    <div class="manual-link">
+      <p>If the app doesn't open automatically:</p>
+      <a href="#" id="open-app-link" style="display: none;">Tap here to open in app</a>
+      <br><br>
+      <a href="#" id="testflight-link" style="display: none; font-size: 12px; color: #999;">Get TestFlight version</a>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const currentPath =
+        window.location.pathname +
+        window.location.search +
+        window.location.hash;
+
+      const APP_SCHEME = 'revive://';
+      const TESTFLIGHT_URL = 'https://testflight.apple.com/join/KavCdpGr';
+      const PLAY_STORE_URL =
+        'https://play.google.com/store/apps/details?id=com.yourcompany.yourapp';
+      const WEBSITE_URL = 'https://www.reviveauto.io';
+
+      function detectPlatform() {
+        const ua = navigator.userAgent || navigator.vendor || window.opera;
+        if (/iPad|iPhone|iPod/.test(ua)) return 'ios';
+        if (/android/i.test(ua)) return 'android';
+        return 'web';
+      }
+
+      const platform = detectPlatform();
+
+      // iOS — Universal Links handled by OS
+      if (platform === 'ios') {
+        const msg = document.getElementById('status-message');
+        if (msg) {
+          msg.textContent =
+            'If the Revive app is installed, it should open automatically.';
+        }
+
+        // Show TestFlight link for users without the app
+        const tf = document.getElementById('testflight-link');
+        if (tf) {
+          tf.href = TESTFLIGHT_URL + '?link=' + encodeURIComponent(window.location.href);
+          tf.style.display = 'inline-block';
+        }
+
+        // Show manual "Open App" link (Universal Link)
+        const openApp = document.getElementById('open-app-link');
+        if (openApp) {
+          openApp.href = window.location.href; // includes query params
+          openApp.style.display = 'inline-block';
+          openApp.textContent = 'Open in Revive App';
+        }
+
+        return;
+      }
+
+      // Android
+      if (platform === 'android') {
+        const deepLink = APP_SCHEME + currentPath.substring(1);
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = deepLink;
+        document.body.appendChild(iframe);
+
+        setTimeout(function () {
+          window.location.href = PLAY_STORE_URL;
+        }, 2000);
+
+        return;
+      }
+
+      // Desktop fallback
+      window.location.href = WEBSITE_URL;
+    })();
+  </script>
+
+</body>
+
+</html>
